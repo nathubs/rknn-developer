@@ -8,26 +8,33 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # 设置非交互式前端
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Fix repository issues for arm64 packages by adding needed sources
-RUN sed -i 's|http://archive.ubuntu.com/ubuntu|http://ports.ubuntu.com/ubuntu-ports|g' /etc/apt/sources.list && \
-    sed -i 's|http://security.ubuntu.com/ubuntu|http://ports.ubuntu.com/ubuntu-ports|g' /etc/apt/sources.list && \
-    dpkg --add-architecture arm64 && \
-    apt-get update && \
-    apt-get install -y gcc-aarch64-linux-gnu libasound2-dev:arm64 libpulse-dev:arm64
-
-# 安装RK3566交叉编译工具链和Go 1.24.2
-RUN apt-get install -y \
-    gcc-aarch64-linux-gnu \
-    g++-aarch64-linux-gnu \
+# 安装RK3566交叉编译工具链和基础工具
+RUN apt-get update && apt-get install -y \
     build-essential \
     git \
     cmake \
     wget \
-    tar    
+    tar \
+    software-properties-common
+
+# 安装aarch64交叉编译工具
+RUN apt-get update && apt-get install -y \
+    gcc-aarch64-linux-gnu \
+    g++-aarch64-linux-gnu
+
+# 添加arm64架构并安装arm64库
+RUN dpkg --add-architecture arm64 && \
+    echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-security main restricted universe multiverse" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y libasound2-dev:arm64 libpulse-dev:arm64
+
 # 下载并安装Go 1.24.2 for linux/amd64
 RUN cd /tmp && \
     wget https://go.dev/dl/go1.24.2.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz    
+    tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz
 
 # 设置Go环境变量
 ENV GOROOT=/usr/local/go
