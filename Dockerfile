@@ -8,12 +8,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # 设置非交互式前端
 ENV DEBIAN_FRONTEND=noninteractive
 
-
-# 下载并安装Go 1.24.2 for linux/amd64
-RUN cd /tmp && \
-    wget https://go.dev/dl/go1.24.2.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz
-
 # Fix repository issues for arm64 packages by adding needed sources
 RUN sed -i 's|http://archive.ubuntu.com/ubuntu|http://ports.ubuntu.com/ubuntu-ports|g' /etc/apt/sources.list && \
     sed -i 's|http://security.ubuntu.com/ubuntu|http://ports.ubuntu.com/ubuntu-ports|g' /etc/apt/sources.list && \
@@ -30,6 +24,10 @@ RUN apt-get install -y \
     cmake \
     wget \
     tar    
+# 下载并安装Go 1.24.2 for linux/amd64
+RUN cd /tmp && \
+    wget https://go.dev/dl/go1.24.2.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz    
 
 # 设置Go环境变量
 ENV GOROOT=/usr/local/go
