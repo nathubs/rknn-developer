@@ -38,7 +38,7 @@ RUN dpkg --add-architecture arm64 && \
     echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" >> /etc/apt/sources.list && \
     echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-security main restricted universe multiverse" >> /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install -y libasound2-dev:arm64 libpulse-dev:arm64
+    apt-get install -y libasound2-dev:arm64 libpulse-dev:arm64 libopus-dev:arm64
 
 # 下载并安装Go 1.24.2 for linux/amd64
 RUN cd /tmp && \
