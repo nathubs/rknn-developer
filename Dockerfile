@@ -8,6 +8,15 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # 设置非交互式前端
 ENV DEBIAN_FRONTEND=noninteractive
 
+# 备份原始sources.list
+RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak
+
+# 替换为正确的源配置
+RUN echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu focal main restricted universe multiverse" > /etc/apt/sources.list && \
+    echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu focal-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb [arch=amd64] http://archive.ubuntu.com/ubuntu focal-backports main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb [arch=amd64] http://security.ubuntu.com/ubuntu focal-security main restricted universe multiverse" >> /etc/apt/sources.list
+
 # 安装RK3566交叉编译工具链和基础工具
 RUN apt-get update && apt-get install -y \
     build-essential \
