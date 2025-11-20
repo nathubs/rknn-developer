@@ -23,10 +23,18 @@ RUN cd /tmp && \
     wget https://go.dev/dl/go1.24.2.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz
 
+RUN dpkg --add-architecture arm64 && \
+    apt-get update && \
+    apt-get install -y gcc-aarch64-linux-gnu libasound2-dev:arm64 libpulse-dev:arm64
+
 # 设置Go环境变量
 ENV GOROOT=/usr/local/go
 ENV GOPATH=/root/go
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+ENV CC=aarch64-linux-gnu-gcc
+ENV GOOS=linux
+ENV GOARCH=arm64
+ENV CGO_ENABLED=1   
 
 # 设置交叉编译环境
 ENV ARCH=arm64
