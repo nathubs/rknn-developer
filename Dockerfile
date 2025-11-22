@@ -52,7 +52,8 @@ ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 ENV CC=aarch64-linux-gnu-gcc
 ENV GOOS=linux
 ENV GOARCH=arm64
-ENV CGO_ENABLED=1   
+ENV CGO_ENABLED=1 
+ENV PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig  
 
 # 设置交叉编译环境
 ENV ARCH=arm64
